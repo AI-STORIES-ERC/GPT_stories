@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 from adjustText import adjust_text  # Prevent overlapping labels
 
 #note: requires installing adjustText package
@@ -127,7 +128,12 @@ def calculate_sentiment_counts(df, group_by="country_name", region=None, sub_reg
     return df.groupby([group_by, "sentiment"]).size().unstack(fill_value=0)
 
 
-def make_proportional_stacked_barchart(df, group_by="country_name", region=None, sub_region=None, country_list=None):
+def make_proportional_stacked_barchart(df, 
+                                       group_by="country_name", 
+                                       region=None, 
+                                       sub_region=None, 
+                                       country_list=None,
+                                       filename="unnamed"):
     """
     Creates a proportional stacked bar chart of sentiment distribution.
     
@@ -162,8 +168,8 @@ def make_proportional_stacked_barchart(df, group_by="country_name", region=None,
         "sadness": "blue",
         "love": "red",
         "anger": "brown",
-        "joy": "green",
-        "surprise": "purple",
+        "joy": "lightgreen",
+        "surprise": "pink",
         "fear": "orange"
     }
     
@@ -198,6 +204,29 @@ def make_proportional_stacked_barchart(df, group_by="country_name", region=None,
     plt.tight_layout()  # Adjust layout to fit labels
     plt.show()
 
+        # Save the plot
+
+    output_path=(f"analysis/figures/sentiments_{filenmae}.png")
+
+    plt.savefig(output_path, dpi=300, bbox_inches="tight")
+    plt.show()  # Show the plot for interactive environments
+
+# def make_boxplot(df):
+
+#     df_melted = df.melt(
+#     id_vars=["sentiment"], 
+#     value_vars=["country_name"], 
+#     var_name="Country", 
+#     value_name="Frequency")
+#     print(df_melted)    
+
+#     plt.figure(figsize=(14, 6))
+
+#     # Create a box plot with visible outliers
+#     ax = sns.boxplot(data=df, x="")
+#     plt.show()
+
+
 
 def sort_sentiments(sentiment, df, group_by="country", region=None, country_list=None):
     """
@@ -211,7 +240,11 @@ def sort_sentiments(sentiment, df, group_by="country", region=None, country_list
     - The sorted DataFrame.
     """
     sentiment_counts = calculate_sentiment_counts(df, group_by=group_by, region=region, country_list=country_list)
-    sorted_sentiments = sentiment_counts.sort_values(by=sentiment, ascending=False)
+    
+    # Convert to proportions
+    sentiment_proportions = sentiment_counts.div(sentiment_counts.sum(axis=1), axis=0)
+
+    sorted_sentiments = sentiment_proportions.sort_values(by=sentiment, ascending=False)
     print(sorted_sentiments.head(20))
 
 if __name__ == "__main__":
@@ -219,7 +252,7 @@ if __name__ == "__main__":
     df = pd.read_csv("analysis/data/all_countries_sentiments.csv")
 
     # Example usage of make_proportional_stacked_barchart function
-    make_boxplot()
+    #make_boxplot(df="analysis/data/all_countries_sentiments.csv")
 
     # Uncomment the following lines to generate other visualizations or analyses
 
@@ -229,13 +262,17 @@ if __name__ == "__main__":
     # Generate proportional stacked bar chart by sub-region
     #make_proportional_stacked_barchart(df, group_by="sub-region")
 
-    # Generate proportional stacked bar chart for Europe region
-    # make_proportional_stacked_barchart(df, group_by="country_name", region="Europe")
+    # Generate proportional stacked bar chart for  region
+    #make_proportional_stacked_barchart(df, group_by="country_name", region="Asia", filename="Asia")
+
 
     # Generate proportional stacked bar chart for a specific list of countries
     #make_proportional_stacked_barchart(df, group_by="country_name", country_list=["USA", "United Kingdom", "North Korea", "Austria"])
 
     # Sort sentiments by 'fear' for each country
-    # sort_sentiments("fear", df, group_by="country")
+    sort_sentiments("fear", df, group_by="region", region="Asia")
+    #print(sort_sentiments("sadness", df, group_by="country_name")) #only shows european countriess???
 
     #make_proportional_stacked_barchart(df, group_by="sub-region")
+
+    
