@@ -1,4 +1,4 @@
-# GPT_stories: Scripts to generate and analyse stories for 252 nationalities using gpt-4o-mini 
+# GPT_stories: Scripts to generate and analyse stories for 236 nationalities using gpt-4o-mini 
 
 By Hermann Wigers and Jill Walker Rettberg
 
