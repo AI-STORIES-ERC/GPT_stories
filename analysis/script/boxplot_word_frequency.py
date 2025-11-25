@@ -25,7 +25,9 @@ def plot_top_words_boxplot(csv_path="..analysis/data/filtered_word_freq.csv",
     top_words = df.nlargest(num_words, "global_freq")["Word"]
 
     # Filter dataset to only include the top words
-    df_top = df[df["Word"].isin(top_words)]
+    #df_top = df[df["Word"].isin(top_words)]
+    ## **** NOTE TESTING HERE REMOVE IF DOESNT WORK ****
+    df_top = df[df["Word"].isin(["fight", "protest","clash","soldier","war"])]
 
     # Sort words by global frequency in descending order
     df_top_sorted = df_top.sort_values(by="global_freq", ascending=False)

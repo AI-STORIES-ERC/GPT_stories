@@ -4,14 +4,14 @@ import pandas as pd
 word_freq = pd.read_csv("../data/filtered_word_freq.csv")
 
 # Which words
-conflict_words = [
+words = [
     "battle", "clash", "conflict", "fight",
     "protest", "soldier", "violence", "war", "warrior",
-    "gun", "sword", "knife", "weapon", "army", "military"
+    "gun", "sword", "knife", "weapon", "army", "military", "the front"
+    "flag", "enemy"
 ]
 
-supernatural_words = ["magic", "guardian", "ghost", "spirit", "ritual", "curse",
-                      "fairy"]
+#supernatural_words = ["magic", "guardian", "ghost", "spirit", "ritual", "curse", "fairy"]
 
 #words = conflict_words
 
@@ -29,21 +29,23 @@ supernatural_words = ["magic", "guardian", "ghost", "spirit", "ritual", "curse",
 data = word_freq[word_freq["Word"].isin(words)].set_index("Word")
 
 # Get only the columns that are country codes (ISO alpha-2)
-country_cols = [c for c in word_freq.columns if len(c) == 2 and c.isupper()]
+countries = [c for c in word_freq.columns if len(c) == 2 and c.isupper()]
 
 # Prepare dictionary of top 10 tables
 tables = {}
 for word in words:
     if word in data.index:
-        counts = data.loc[word, country_cols].sort_values(ascending=False)
+        counts = data.loc[word, countries].sort_values(ascending=False)
         top10 = counts.head(10).reset_index()
+        print(top10)
         top10.columns = ["Country", "Count"]
         tables[word] = top10
 
-print(tables)
+
+#print(tables)
 
 # Example: show top 10 for "war"
 
 
 
-#print(tables["war"])
+print(tables["war"])
